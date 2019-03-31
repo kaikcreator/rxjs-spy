@@ -13,6 +13,9 @@ const source = interval(500).pipe(
 );
 
 const display = new RxjsDisplay();
+display.pushOperator('take');
+display.pushOperator('map');
+display.pushOperator('bufferCount');
 
 source.subscribe(x => {
   console.log(x); 

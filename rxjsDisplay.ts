@@ -26,14 +26,18 @@ class drawableOperator extends Drawable{
   }
 
   drawInternals(context:CanvasRenderingContext2D){
-    context.font = "12px verdana";
+    context.font = "11px verdana";
     context.textAlign = "center";
+    context.fillStyle = "white";
+    //const minWidth = context.measureText(this.name).width;
+    let width = 60;
+    let height = 40;
+    let xOrigin = this.x - width / 2;
+    let yOrigin = this.y - 24;
+    context.strokeRect(xOrigin, yOrigin, width, height);
+    context.fillRect(xOrigin, yOrigin, width, height);
     context.fillStyle = "black";
-    const minWidth = context.measureText(this.name).width;
-    let width = minWidth + 10;
-    let height = width;
-    context.strokeRect(this.x, this.y, width, height);
-    context.fillText(this.name, this.x, this.y);
+    context.fillText(this.name, this.x, this.y, width - 2);
   }
 
 }
@@ -76,6 +80,7 @@ export class RxjsDisplay{
   private speed = 120; //px per second
   private frameRate = 60; //frames per second
   private yPosition = 0;
+  private xOrigin = 50;
 
   constructor(canvasElementId:string='rxjs-display', yPosition?){
     this.canvas = <HTMLCanvasElement>document.getElementById(canvasElementId);
@@ -120,17 +125,17 @@ export class RxjsDisplay{
     this.updatePosition();
     this.clearCanvas();
     this.drawBackground();
-
-    this.drawableOperators.forEach(item => item.draw(this.context));
     this.drawableDataStream.forEach(item => item.draw(this.context));
+    this.drawableOperators.forEach(item => item.draw(this.context));
   }
 
   public pushValue(data:any){
-      this.drawableDataStream.push(new drawableDataStream(0, this.yPosition, data));
+      this.drawableDataStream.push(new drawableDataStream(this.xOrigin, this.yPosition, data));
   }
 
   public pushOperator(name:string){
-    this.drawableOperators.push(new drawableDataStream(0, this.yPosition, name));
+    let xPosition = this.xOrigin + this.drawableOperators.length * 160;
+    this.drawableOperators.push(new drawableOperator(xPosition, this.yPosition, name));
   }  
 
 }
