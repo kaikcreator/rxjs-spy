@@ -30,10 +30,10 @@ class drawableOperator extends Drawable{
     context.textAlign = "center";
     context.fillStyle = "white";
     //const minWidth = context.measureText(this.name).width;
-    let width = 60;
-    let height = 40;
+    let width = 50;
+    let height = 50;
     let xOrigin = this.x - width / 2;
-    let yOrigin = this.y - 24;
+    let yOrigin = this.y - 30;
     context.strokeRect(xOrigin, yOrigin, width, height);
     context.fillRect(xOrigin, yOrigin, width, height);
     context.fillStyle = "black";
@@ -80,7 +80,7 @@ export class RxjsDisplay{
   private speed = 120; //px per second
   private frameRate = 60; //frames per second
   private yPosition = 0;
-  private xOrigin = 50;
+  private xOrigin = 36;
 
   constructor(canvasElementId:string='rxjs-display', yPosition?){
     this.canvas = <HTMLCanvasElement>document.getElementById(canvasElementId);
