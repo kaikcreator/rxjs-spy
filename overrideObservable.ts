@@ -45,9 +45,9 @@ function customPipeFromArray<T, R>(fns: Array<UnaryFunction<T, R>>): UnaryFuncti
     pipedData$ = merge(...spiedObservables);
     //and subscribe to show results on console
     pipedData$.subscribe(
-      data => {
-        console.log("pipes flow: ", data);
-        display.pushValue(data);
+      content => {
+        console.log("pipes flow: ", content);
+        display.pushValue(content.data);
       }
     )    
 

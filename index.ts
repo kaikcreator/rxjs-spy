@@ -8,7 +8,7 @@ const source = interval(500).pipe(
   map(x => 2*x),
   bufferCount(2),
   delay(200),
-  scan((state, current) => [state[0]+current[0], state[1]+current[1]], [0,0]),
+  scan((state, current:[number, number]) => [state[0] + current[0], state[0] + current[1]], [0,0])
 );
 
 
