@@ -1,4 +1,4 @@
-import { interval } from 'rxjs';
+import { interval, animationFrameScheduler } from 'rxjs';
 
 abstract class Drawable{
   protected abstract drawInternals(context:any);
@@ -70,15 +70,21 @@ class drawableDataStream extends Drawable{
 export class RxjsDisplay{
   public canvas:HTMLCanvasElement;
   private context:CanvasRenderingContext2D;
-  public drawableItems:Drawable[] = [];
+  public drawableOperators:Drawable[] = [];
+  public drawableDataStream:Drawable[] = [];
 
   private speed = 120; //px per second
   private frameRate = 60; //frames per second
+  private yPosition = 0;
 
-  constructor(canvasElementId:string='rxjs-display'){
+  constructor(canvasElementId:string='rxjs-display', yPosition?){
     this.canvas = <HTMLCanvasElement>document.getElementById(canvasElementId);
+    if(!yPosition){
+      this.yPosition = this.canvas.height / 2;
+    }
+
     this.context = this.canvas.getContext('2d');
-    interval(1000/this.frameRate).subscribe(()=>{
+    interval(1000/this.frameRate, animationFrameScheduler).subscribe(()=>{
       this.update();
     })
   }
@@ -106,8 +112,7 @@ export class RxjsDisplay{
   }
 
   private updatePosition(){
-    if(this.drawableItems)
-      this.drawableItems.forEach(item => item.updatePosition(this.speed/this.frameRate));
+      this.drawableDataStream.forEach(item => item.updatePosition(this.speed/this.frameRate));
   }
 
   //draws empty board
@@ -115,17 +120,17 @@ export class RxjsDisplay{
     this.updatePosition();
     this.clearCanvas();
     this.drawBackground();
-    if(this.drawableItems){
-      this.drawableItems.forEach(item => item.draw(this.context));
-    }
+
+    this.drawableOperators.forEach(item => item.draw(this.context));
+    this.drawableDataStream.forEach(item => item.draw(this.context));
   }
 
   public pushValue(data:any){
-      this.drawableItems.push(new drawableDataStream(50, 50, data));
+      this.drawableDataStream.push(new drawableDataStream(0, this.yPosition, data));
   }
 
   public pushOperator(name:string){
-    this.drawableItems.push(new drawableDataStream(10, 50, name));
+    this.drawableOperators.push(new drawableDataStream(0, this.yPosition, name));
   }  
 
 }
