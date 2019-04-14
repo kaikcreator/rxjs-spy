@@ -9,6 +9,25 @@ let spiedObservables:Subject<any>[] = [];
 let operators:string[] = [];
 let pipedData$:Observable<any>;
 
+
+//spy operator and subscribe to its samples, with a certain delay, to display them well
+const spyOperatorFunction = (operatorFn) =>{
+    let operator = operatorFn.operator.constructor.name.split('Operator')[0];
+    console.log(operatorFn.operator);
+    display.pushOperator(operator);
+
+    //push operatorFn observable data into the subjects array, and use
+    //subject as a proxy to spy each pipe operator
+    let id = operators.push(operator) - 1;
+    let subject = new Subject<DataStream>();
+    spiedObservables.push(subject);
+    operatorFn.subscribe(data => subject.next({id, operator, data}))
+
+    //reduced is expected to return the observable
+    return operatorFn.pipe(delay(display.getDelayBetweenSamples()));
+}
+
+
 //this function overrides pipeFromArray, so any piped operation is tracked
 function customPipeFromArray<T, R>(fns: Array<UnaryFunction<T, R>>): UnaryFunction<T, R> {
   if (!fns) {
@@ -23,19 +42,8 @@ function customPipeFromArray<T, R>(fns: Array<UnaryFunction<T, R>>): UnaryFuncti
     console.log("----operators detected----");
     let reduce = fns.reduce((prev: any, fn: UnaryFunction<T, R>) => {
       let result: any =  fn(prev);
-      let operator = result.operator.constructor.name.split('Operator')[0];
-      console.log(result.operator);
-      display.pushOperator(operator);
-
-      //push result observable data into the subjects array, and use
-      //subject as a proxy to spy each pipe operator
-      let id = operators.push(operator) - 1;
-      let subject = new Subject<DataStream>();
-      spiedObservables.push(subject);
-      result.subscribe(data => subject.next({id, operator, data}))
-
-      //reduced is expected to return the observable
-      return result.pipe(delay(display.getDelayBetweenSamples()));
+      //return a modified version of the operator, that we are spying
+      return spyOperatorFunction(result);
     }, input as any);
     console.log("----end operators----");
 
@@ -43,8 +51,7 @@ function customPipeFromArray<T, R>(fns: Array<UnaryFunction<T, R>>): UnaryFuncti
     //create observable with all the spy flows
     pipedData$ = merge(...spiedObservables);
     //and subscribe to show results on console
-    pipedData$.subscribe(
-      content => {
+    pipedData$.subscribe( content => {
         console.log("pipes flow: ", content);
         display.pushStreamedData(content);
       }
