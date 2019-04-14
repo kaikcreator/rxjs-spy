@@ -12,7 +12,8 @@ export class RxjsDisplay{
   private context:CanvasRenderingContext2D;
   public drawableGroups:DrawableGroup[] = [];
 
-  private speed = 120; //px per second
+  private distanceBetweenSources = 200;
+  private speed = 100; //px per second
   private frameRate = 60; //frames per second
   private yPosition = 0;
   private xOrigin = 36;
@@ -65,6 +66,10 @@ export class RxjsDisplay{
     this.drawableGroups.forEach(item => item.draw(this.context));
   }
 
+  public getDelayBetweenSamples(){
+    return this.distanceBetweenSources / this.speed * 1000;
+  }
+
   //Method to add data streamed through the flow
   public pushStreamedData(dataStream:DataStream){
     this.drawableGroups[dataStream.id].pushData(dataStream.data);
@@ -72,9 +77,8 @@ export class RxjsDisplay{
 
   //Method to add an operator
   public pushOperator(name:string){
-    const width = 150;
-    let xPosition = this.drawableGroups.length * width + this.xOrigin;
-    let group = new DrawableGroup(xPosition, 0, width, this.canvas.height, name);
+    let xPosition = this.drawableGroups.length * this.distanceBetweenSources + this.xOrigin;
+    let group = new DrawableGroup(xPosition, 0, this.distanceBetweenSources, this.canvas.height, name);
     this.drawableGroups.push(group);
   }  
 

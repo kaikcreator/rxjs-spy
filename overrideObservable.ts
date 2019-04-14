@@ -35,7 +35,7 @@ function customPipeFromArray<T, R>(fns: Array<UnaryFunction<T, R>>): UnaryFuncti
       result.subscribe(data => subject.next({id, operator, data}))
 
       //reduced is expected to return the observable
-      return result.pipe(delay(1000));
+      return result.pipe(delay(display.getDelayBetweenSamples()));
     }, input as any);
     console.log("----end operators----");
 
