@@ -1,7 +1,8 @@
 import { noop, UnaryFunction, OperatorFunction, Observable, Subject, combineLatest, merge } from 'rxjs';
 import { tap, map, share, delay } from 'rxjs/operators';
 //import { pipeFromArray } from "rxjs/internal/util/pipe";
-import { RxjsDisplay } from './rxjsDisplay';
+import { RxjsDisplay, DataStream } from './RxjsDisplay';
+
 const display = new RxjsDisplay();
 
 let spiedObservables:Subject<any>[] = [];
@@ -20,7 +21,6 @@ function customPipeFromArray<T, R>(fns: Array<UnaryFunction<T, R>>): UnaryFuncti
 
   return function piped(input: T): R {
     console.log("----operators detected----");
-
     let reduce = fns.reduce((prev: any, fn: UnaryFunction<T, R>) => {
       let result: any =  fn(prev);
       let operator = result.operator.constructor.name.split('Operator')[0];
@@ -29,15 +29,14 @@ function customPipeFromArray<T, R>(fns: Array<UnaryFunction<T, R>>): UnaryFuncti
 
       //push result observable data into the subjects array, and use
       //subject as a proxy to spy each pipe operator
-      let id = operators.push(operator);
-      let subject = new Subject<any>();
+      let id = operators.push(operator) - 1;
+      let subject = new Subject<DataStream>();
       spiedObservables.push(subject);
       result.subscribe(data => subject.next({id, operator, data}))
 
       //reduced is expected to return the observable
       return result.pipe(delay(1000));
     }, input as any);
-
     console.log("----end operators----");
 
 
@@ -47,7 +46,7 @@ function customPipeFromArray<T, R>(fns: Array<UnaryFunction<T, R>>): UnaryFuncti
     pipedData$.subscribe(
       content => {
         console.log("pipes flow: ", content);
-        display.pushValue(content.data);
+        display.pushStreamedData(content);
       }
     )    
 
