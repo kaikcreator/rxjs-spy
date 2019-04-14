@@ -1,18 +1,18 @@
 import './overrideObservable';
  
-import { interval } from 'rxjs'; 
-import { map, delay, take, scan, bufferCount } from 'rxjs/operators';
+import { interval, fromEvent } from 'rxjs'; 
+import { map, delay, mapTo, scan, bufferCount } from 'rxjs/operators';
 
-const source = interval(500).pipe(
-  take(6),
+const btn = document.getElementById('button');
+
+
+fromEvent(btn, 'click').pipe(
+  mapTo(1),
+  scan((state, current) => state + current),
   map(x => 2*x),
   bufferCount(2),
 //  delay(200),
-  scan((state, current:[number, number]) => [state[0] + current[0], state[0] + current[1]], [0,0])
-);
-
-
-
-source.subscribe(x => {
+)
+.subscribe(x => {
   console.log(x); 
 });
