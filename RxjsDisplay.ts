@@ -24,11 +24,24 @@ export class RxjsDisplay{
       this.yPosition = this.canvas.height / 2;
     }
     this.context = this.canvas.getContext('2d');
+    this.prepareForRetinaDisplays();
     //update board using defined frameRate
     interval(1000/this.frameRate, animationFrameScheduler).subscribe(()=>{
       this.update();
     })
   }
+
+  private prepareForRetinaDisplays =  () => {
+        if (window.devicePixelRatio > 1) {
+            var canvasWidth = this.canvas.width;
+            var canvasHeight = this.canvas.height;
+            this.canvas.width = canvasWidth * window.devicePixelRatio;
+            this.canvas.height = canvasHeight * window.devicePixelRatio;
+            this.canvas.style.width = `${canvasWidth}px`;
+            this.canvas.style.height = `${canvasHeight}px`;
+            this.context.scale(window.devicePixelRatio, window.devicePixelRatio);
+        }
+    };
 
   //internal method to clear canvas
   private clearCanvas = () =>{
@@ -78,7 +91,7 @@ export class RxjsDisplay{
   //Method to add an operator
   public pushOperator(name:string){
     let xPosition = this.drawableGroups.length * this.distanceBetweenSources + this.xOrigin;
-    let group = new DrawableGroup(xPosition, 0, this.distanceBetweenSources, this.canvas.height, name);
+    let group = new DrawableGroup(xPosition, 0, this.distanceBetweenSources, this.canvas.height/window.devicePixelRatio, name);
     this.drawableGroups.push(group);
   }  
 
