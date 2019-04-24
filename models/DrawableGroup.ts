@@ -8,17 +8,17 @@ export class DrawableGroup extends Drawable{
   public source:Drawable;
   private drawableDataStream:Drawable[] = [];
 
-  constructor(x, y, width, height, name){
+  constructor(x, y, width, height, name, description){
     super();
     this.x = x;
     this.y = y;
     this.width = width;
     this.height = height;
-    this.setSource(name);
+    this.setSource(name, description);
   }
 
-  private setSource(name){
-    this.source = new DrawableSource(this.x, this.height/2, name);
+  private setSource(name, description){
+    this.source = new DrawableSource(this.x, this.height/2, name, description);
   }
 
   public pushData(data){

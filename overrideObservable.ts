@@ -3,6 +3,10 @@ import { tap, map, share, delay } from 'rxjs/operators';
 //import { pipeFromArray } from "rxjs/internal/util/pipe";
 import { RxjsDisplay, DataStream } from './RxjsDisplay';
 
+export const rxjsSpyConfig = {
+  operatorDescriptions:[]
+}
+
 const display = new RxjsDisplay();
 
 let spiedObservables:Subject<any>[] = [];
@@ -14,13 +18,18 @@ let pipedData$:Observable<any>;
 const spyOperatorFunction = (operatorFn) =>{
     let operatorName = operatorFn.operator.constructor.name.split('Operator')[0];
     console.log(operatorFn.operator);
-    display.pushOperator(operatorName);
+    const arrayPosition = spiedObservables.length;
+    const description = rxjsSpyConfig.operatorDescriptions.length > arrayPosition ? rxjsSpyConfig.operatorDescriptions[arrayPosition] : null;
+
+    display.pushOperator(operatorName, description);
+    
 
     //push operatorFn observable data into the subjects array, and use
     //subject as a proxy to spy each pipe operator
     let id = operators.push(operatorName) - 1;
     let subject = new Subject<DataStream>();
     spiedObservables.push(subject);
+
     operatorFn.subscribe(data => subject.next({id, operatorName, data}))
 
     //reduced is expected to return the observable

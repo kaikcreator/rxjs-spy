@@ -4,7 +4,7 @@ import { DrawableGroup } from './models/DrawableGroup';
 export interface DataStream{
   id:number;
   operatorName:string;
-  data:any
+  data:any;
 }
 
 export class RxjsDisplay{
@@ -89,9 +89,9 @@ export class RxjsDisplay{
   }
 
   //Method to add an operator
-  public pushOperator(name:string){
+  public pushOperator(name:string, description:string=null){
     let xPosition = this.drawableGroups.length * this.distanceBetweenSources + this.xOrigin;
-    let group = new DrawableGroup(xPosition, 0, this.distanceBetweenSources, this.canvas.height/window.devicePixelRatio, name);
+    let group = new DrawableGroup(xPosition, 0, this.distanceBetweenSources, this.canvas.height/window.devicePixelRatio, name, description);
     this.drawableGroups.push(group);
   }  
 
