@@ -3,7 +3,7 @@ import { DrawableGroup } from './models/DrawableGroup';
 
 export interface DataStream{
   id:number;
-  operator:string;
+  operatorName:string;
   data:any
 }
 
