@@ -12,16 +12,16 @@ let pipedData$:Observable<any>;
 
 //spy operator and subscribe to its samples, with a certain delay, to display them well
 const spyOperatorFunction = (operatorFn) =>{
-    let operator = operatorFn.operator.constructor.name.split('Operator')[0];
+    let operatorName = operatorFn.operator.constructor.name.split('Operator')[0];
     console.log(operatorFn.operator);
-    display.pushOperator(operator);
+    display.pushOperator(operatorName);
 
     //push operatorFn observable data into the subjects array, and use
     //subject as a proxy to spy each pipe operator
-    let id = operators.push(operator) - 1;
+    let id = operators.push(operatorName) - 1;
     let subject = new Subject<DataStream>();
     spiedObservables.push(subject);
-    operatorFn.subscribe(data => subject.next({id, operator, data}))
+    operatorFn.subscribe(data => subject.next({id, operatorName, data}))
 
     //reduced is expected to return the observable
     return operatorFn.pipe(delay(display.getDelayBetweenSamples()));
