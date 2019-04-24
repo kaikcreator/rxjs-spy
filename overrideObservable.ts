@@ -47,6 +47,8 @@ function customPipeFromArray<T, R>(fns: Array<UnaryFunction<T, R>>): UnaryFuncti
     return fns[0];
   }
 
+  display.setOperatorsLength(fns.length);
+
   return function piped(input: T): R {
     console.log("----operators detected----");
     let reduce = fns.reduce((prev: any, fn: UnaryFunction<T, R>) => {

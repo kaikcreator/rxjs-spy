@@ -11,6 +11,9 @@ export class RxjsDisplay{
   public canvas:HTMLCanvasElement;
   private context:CanvasRenderingContext2D;
   public drawableGroups:DrawableGroup[] = [];
+  public setOperatorsLength = (size) =>{
+    this.distanceBetweenSources = this.canvas.width / size;
+  }
 
   private distanceBetweenSources = 200;
   private speed = 100; //px per second
