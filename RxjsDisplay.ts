@@ -12,7 +12,8 @@ export class RxjsDisplay{
   private context:CanvasRenderingContext2D;
   public drawableGroups:DrawableGroup[] = [];
   public setOperatorsLength = (size) =>{
-    this.distanceBetweenSources = this.canvas.width / size;
+    this.distanceBetweenSources = this.canvas.width / (size * window.devicePixelRatio);
+    //this.prepareForRetinaDisplays();
   }
 
   private distanceBetweenSources = 200;
@@ -64,9 +65,12 @@ export class RxjsDisplay{
   //internal method to paint board background
   private drawBackground = () =>{
       this.context.beginPath();
-      this.context.rect(0, 0, this.canvas.width, this.canvas.height);
-      this.context.fillStyle = "#2196F3";
+      this.context.rect(0, 0, this.canvas.width/window.devicePixelRatio, this.canvas.height/window.devicePixelRatio);
+      this.context.fillStyle = "white";
       this.context.fill();
+      this.context.strokeStyle = "black";
+      this.context.lineWidth = 6;
+      this.context.stroke();      
   }
 
   //internal method to update coordinates samples

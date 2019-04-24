@@ -18,6 +18,7 @@ export class DrawableDataStream extends Drawable{
     context.font = "12px verdana";
     context.textAlign = "center";
     context.fillStyle = "white";
+    context.lineWidth = 2;
     context.beginPath();
     context.arc(this.x, this.y-4, 20, 0, 2 * Math.PI);
     context.stroke();

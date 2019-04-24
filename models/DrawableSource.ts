@@ -16,6 +16,7 @@ export class DrawableSource extends Drawable{
     context.font = "11px verdana";
     context.textAlign = "center";
     context.fillStyle = "white";
+    context.lineWidth = 3;
     //const minWidth = context.measureText(this.name).width;
     let width = 50;
     let height = 50;
